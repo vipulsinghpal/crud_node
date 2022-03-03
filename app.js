@@ -6,9 +6,16 @@ const dog = require('./dog.model');
 
 
 
+
 mongoose.connect('mongodb://localhost:27017/Dogdb');
 
 const port = 8080;
+//bodyparser to parse json
+app.use(bodyparser.json())
+//This bodyparser give or receive body elements through the url 
+app.use(bodyparser.urlencoded({
+    extended:true
+}));
 
 app.get('/',(req,res)=>{
     console.log("empty route");
@@ -27,7 +34,8 @@ app.get('/dog',(req,res) =>{
             res.json(dogdata)
         }
     })
-})
+}) 
+// get single data with id
 app.get('/dog/:id',(req,res) =>{
     console.log("get one dog detail");
     dog.findOne({
@@ -38,7 +46,55 @@ app.get('/dog/:id',(req,res) =>{
         }
         else{
             console.log("getting single dog data");
-            res.json(singledogdata);
+            res.json(singledogdata);    
+        }
+    })
+})
+
+// post request to add record
+app.post('/dog',(req,res)=>{
+    console.log("inside post request");
+    dog.create(req.body, (err,Updateddata)=>{
+        if(err){
+            res.send("error posting data")
+        }
+        else{
+            res.send(Updateddata)
+        }
+
+    })
+})
+
+// update model using findone and update 
+// MyModel.findOneAndUpdate({}, { $set: { test: 1 } }, { new: true }, callback);
+app.put('/dog/:id',(req,res)=>{
+    console.log("inside put");
+    dog.findOneAndUpdate({
+        _id:req.params.id
+    },{$set: {Breedname: req.body.Breedname}},
+    {new:true},
+    (err,updatedBreedname)=>{
+        if(err){emo
+            res.send("error while updating")
+        }
+        else{
+            console.log(updatedBreedname);
+            res.send(updatedBreedname);
+        }
+    }
+)
+
+})
+// for deletion using findOneAndRemove(conditions, options, callback)
+app.delete('/dog/:id',(req,res) =>{
+    dog.findOneAndRemove({
+        _id:req.params.id
+    },(err,deleterecord)=>{
+        if(err){
+            res.send("error while deleting");
+        }
+        else{
+            res.send(deleterecord)
         }
     })
 })
