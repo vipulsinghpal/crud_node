@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const schema = mongoose.Schema;
 
 const DogSchema = new schema({
@@ -6,4 +6,5 @@ const DogSchema = new schema({
     food: String,
     temprament: String
 })
-module.exports = mongoose.model ('dog',DogSchema);
+const dogModel = mongoose.model ('dog',DogSchema);
+export default dogModel;
